@@ -63,6 +63,13 @@ var  estimateStatisticTemplate = '<div class="ghx-end"> \
 var avatarTemplate = '<div class="ghx-avatar"><img src="%s" class="ghx-avatar-img"></div>'
 
 var getIssueView = function(issue) {
+  var points = null
+  if (issue.estimateStatistic != undefined) {
+    if (issue.estimateStatistic.statFieldValue != undefined) {
+      points = issue.estimateStatistic.statFieldValue.text
+    }
+  }
+
   return parse(issueTemplate, 
     issue.selected ? "ghx-selected" : "",
     issue.typeUrl,
@@ -70,7 +77,7 @@ var getIssueView = function(issue) {
     issue.key,
     issue.summary,
     issue.hasOwnProperty('epicField') ? parse(epicTemplate, issue.epicField.epicColor, issue.epicField.text) : "",
-    issue.hasOwnProperty('estimateStatistic') ? parse(estimateStatisticTemplate, issue.estimateStatistic.statFieldValue.text) : "",
+    issue.hasOwnProperty('estimateStatistic') ? parse(estimateStatisticTemplate, (points == null || points == 'undefined') ? "" : points) : "",
     issue.hasOwnProperty('avatarUrl') ? parse(avatarTemplate, issue.avatarUrl) : "",
     issue.priorityUrl)
 }
@@ -82,9 +89,9 @@ var getBoardView = function() {
 
 
   for (var key in board) {
-    if (key == 'In Progress' || key == 'To Do') {
+    if (key != null) {
       issues = board[key].issues
-      boardView += '<li class="ghx-column ui-sortable" data-column-id="">'
+      boardView += '<li class="ghx-column" data-column-id="">'
       issues.forEach(function (issue) {
         boardView += getIssueView(issue)
       })
@@ -129,8 +136,15 @@ var selectIssue = function(select) {
   issues[currentIssueY]['selected'] = select
 }
 
+var getColumnsFromBoard = function() {
+  var keys = [];
+  for(var k in board) keys.push(k);
+  return keys;
+}
 
 document.addEventListener('keydown', function (evt) {
+  var cols = getColumnsFromBoard().length - 1
+
   if (evt.keyCode >= 37 && evt.keyCode <= 40) {
       selectIssue(false)
 
@@ -139,7 +153,7 @@ document.addEventListener('keydown', function (evt) {
       } else if (evt.keyCode == 38) {
         currentIssueY = Math.max(0, currentIssueY - 1)
       } else if (evt.keyCode == 39) {
-        currentIssueX = Math.min(1, currentIssueX + 1)
+        currentIssueX = Math.min(cols, currentIssueX + 1)
       } else if (evt.keyCode == 40) {
         currentIssueY = currentIssueY + 1
       }
@@ -152,15 +166,37 @@ document.addEventListener('keydown', function (evt) {
     // on escape: exit
     ipc.send('abort')
   }
-  else if (evt.keyCode == 13) {
+  else if (evt.ctrlKey && evt.keyCode == 13) {
     // on enter copy and exit
     copyItem()
+    ipc.send('abort')
+  }
+  else if (evt.keyCode == 13) {
+    // on enter copy and exit
+    copyItemDescription()
     ipc.send('abort')
   }
 
 })
 
+
 var copyItem = function() {
+  var keys = []
+  for(var k in board) keys.push(k)
+
+  var issues = (board[keys[currentIssueX]]).issues
+  var issue = issues[currentIssueY]
+  
+  data = (issue.key + ' ')
+
+  clipboard.writeText(data)
+
+  if (issue.status.name != "In Progress") {
+    moveToInProgress(issue.key)
+  }
+}
+
+var copyItemDescription = function() {
   var keys = []
   for(var k in board) keys.push(k)
 

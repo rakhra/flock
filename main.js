@@ -1,7 +1,7 @@
 var menubar = require('menubar')
 var ipc = require('electron').ipcMain
 var globalShortcut = require('global-shortcut')
-var mb = menubar({ width: 570, height: 300, preloadWindow: true, 'window-position': 'center' })
+var mb = menubar({ width: 600, height: 500, preloadWindow: true, 'window-position': 'center' })
 var Menu = require('menu')
 
 mb.on('show', function () {

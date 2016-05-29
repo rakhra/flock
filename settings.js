@@ -5,11 +5,11 @@ var defaultPreference = {
   'open-window-shortcut': 'ctrl+j',
   'board-url': '',
   'login': '',
-  'password' :''
+  'password' : ''
 }
 
 var preferenceNames = {
-  'open-window-shortcut': 'Chirp Shortcut',
+  'open-window-shortcut': 'Open Shortcut',
   'board-url': 'JIRA Board URL',
   'login': 'JIRA Login',
   'password' : 'JIRA Password'
