@@ -3,7 +3,7 @@
 var clipboard = require('clipboard')
 var jira = require('./jira.js')
 var transitions = require('./transition.js')
-
+var board = null;
 
 var getColumns = function(board) {
   var cols = board.columnsData.columns
@@ -15,12 +15,35 @@ var getColumns = function(board) {
   return colMap
 }
 
+
+
+var colTemplate = ' \
+<li class="ghx-column"><h2>%s</h2></li>'
+
+var getColumnViews = function() {
+  var cols = getColumnsFromBoard()
+  var colView = ""
+  cols.forEach(function (col) {
+    colView = colView + parse(colTemplate, col)
+  })
+
+  return colView
+}
+
+
+
+
 var getBoard = function(board) {
   var colMap = getColumns(board)
 
   board.issuesData.issues.forEach(function (issue) {
-    issue['selected'] = false
-    colMap[issue.status.name].issues.push(issue)
+    if (preference["epic"] == null || preference["epic"] == '' ||
+        (issue.epicField != undefined && (preference["epic"].split(',').indexOf(issue.epicField.text) >= 0))) {
+
+      issue['selected'] = false
+      colMap[issue.status.name].issues.push(issue)  
+    }
+    
   })
 
   return colMap
@@ -108,6 +131,12 @@ var render = function() {
       output.removeChild(output.firstChild);
   }
   output.innerHTML = getBoardView()
+
+  var output = document.getElementById('ghx-column-headers')
+  while (output.firstChild) {
+      output.removeChild(output.firstChild);
+  }
+  output.innerHTML = getColumnViews();
 }
 
 
@@ -213,7 +242,7 @@ var copyItemDescription = function() {
 }
 
 
-var board = null;
+
 
 var fetchBoard = function() {
   jiraCall(

@@ -19,7 +19,7 @@
     .ghx-columns {}
     
     .ghx-content-main {
-        width: 580px;
+        width: 780px;
         height: 480px;
         /*
             overflow-x: auto;
@@ -37,6 +37,14 @@
 
     .on-preference {
   overflow: hidden;
+}
+
+#ghx-column-header-group.ghx-fixed {
+  background: none;
+}
+
+.ghx-column-headers .ghx-column {
+  background: none;
 }
 
 .preference-panel {
@@ -100,6 +108,10 @@
     <div id="preference" class="preference hide"></div>
 
     <div id="ghx-content-main" class="ghx-content-main">
+      <div id="ghx-column-header-group" class="ghx-column-header-group ghx-fixed">
+        <ul id="ghx-column-headers" class="ghx-column-headers"></ul>
+      </div>
+
         <ul id="ghx-columns" class="ghx-columns">
         </ul>
     </div>

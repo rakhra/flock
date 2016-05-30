@@ -4,6 +4,7 @@ var ipc = require('electron').ipcRenderer
 var defaultPreference = {
   'open-window-shortcut': 'ctrl+j',
   'board-url': '',
+  'epic': '',
   'login': '',
   'password' : ''
 }
@@ -11,6 +12,7 @@ var defaultPreference = {
 var preferenceNames = {
   'open-window-shortcut': 'Open Shortcut',
   'board-url': 'JIRA Board URL',
+  'epic': 'Epic Filter',
   'login': 'JIRA Login',
   'password' : 'JIRA Password'
 }
