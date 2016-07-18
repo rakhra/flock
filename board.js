@@ -4,6 +4,7 @@ var clipboard = require('clipboard')
 var jira = require('./jira.js')
 var transitions = require('./transition.js')
 var board = null;
+var initialLoad = false;
 
 var getColumns = function(board) {
   var cols = board.columnsData.columns
@@ -72,12 +73,12 @@ var issueTemplate = ' \
     %s\
     %s \
     <div class="ghx-flags"><span class="ghx-priority" title="Medium"><img src="%s"></span></div> \
-    <div class="ghx-grabber ghx-grabber-transparent"></div> \
+    <div class="ghx-grabber ghx-grabber-transparent" style="background-color:%s"></div> \
     <div class="ghx-move-count"><b></b></div> \
   </div> \
 '
 
-var epicTemplate = '<div class="ghx-highlighted-fields"><div class="ghx-highlighted-field"><span class="aui-label %s" title="" data-epickey="">%s</span></div></div>'
+var epicTemplate = '<div class="ghx-highlighted-fields"><div class="ghx-highlighted-field"><span class="aui-label %s">%s</span></div></div>'
 
 var  estimateStatisticTemplate = '<div class="ghx-end"> \
         <div class="ghx-corner"><span class="aui-badge" title="Story Points">%s</span></div> \
@@ -102,7 +103,8 @@ var getIssueView = function(issue) {
     issue.hasOwnProperty('epicField') ? parse(epicTemplate, issue.epicField.epicColor, issue.epicField.text) : "",
     issue.hasOwnProperty('estimateStatistic') ? parse(estimateStatisticTemplate, (points == null || points == 'undefined') ? "" : points) : "",
     issue.hasOwnProperty('avatarUrl') ? parse(avatarTemplate, issue.avatarUrl) : "",
-    issue.priorityUrl)
+    issue.priorityUrl,
+    issue.color)
 }
 
 
@@ -114,10 +116,14 @@ var getBoardView = function() {
   for (var key in board) {
     if (key != null) {
       issues = board[key].issues
-      boardView += '<li class="ghx-column" data-column-id="">'
-      issues.forEach(function (issue) {
-        boardView += getIssueView(issue)
-      })
+      boardView += '<li class="ghx-column">'
+      if (issues.length == 0) {
+        boardView += '<div class="ghx-wrap-issue"></div>'
+      } else {
+        issues.forEach(function (issue) {
+          boardView += getIssueView(issue)
+        })
+      }
       boardView += '</li>'
     }
   }
@@ -220,7 +226,7 @@ var copyItem = function() {
 
   clipboard.writeText(data)
 
-  if (issue.status.name != "In Progress") {
+  if (issue.status.name != preference['target-state']) {
     moveToInProgress(issue.key)
   }
 }
@@ -236,26 +242,46 @@ var copyItemDescription = function() {
 
   clipboard.writeText(data)
 
-  if (issue.status.name != "In Progress") {
+  if (issue.status.name != preference['target-state']) {
     moveToInProgress(issue.key)
   }
 }
 
 
-
+function sleepFor( sleepDuration ){
+    var now = new Date().getTime();
+    while(new Date().getTime() < now + sleepDuration){ /* do nothing */ } 
+}
 
 var fetchBoard = function() {
+   if (initialLoad == false) {
+    document.getElementById('logo').classList.add('showlogo')
+    document.getElementById('logo').classList.remove('hidelogo')
+  }
   jiraCall(
     preference["board-url"],
     preference["login"],
     preference["password"],
-    "GET",{})
+    "GET", {})
     .then(JSON.parse)
     .then(function(response) {
       board = getBoard(response);
       render()
+      if (initialLoad == false) {
+        sleepFor(3000)
+        document.getElementById('logo').classList.remove('showlogo')
+        document.getElementById('logo').classList.add('hidelogo')
+      } 
+
+      initialLoad = true
+
+      
     }).catch(function(error) {
       console.log("Failed!", error);
+      if (initialLoad == false) {
+        document.getElementById('logo').classList.remove('showlogo')
+        document.getElementById('logo').classList.add('hidelogo')
+      } 
     });
 };
 

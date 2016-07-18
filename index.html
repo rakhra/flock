@@ -6,17 +6,19 @@
     <title>Credit Suisse</title>
     
 
-    <link rel="stylesheet" type="text/css" href="bass.css" />
-    <link rel="stylesheet" type="text/css" href="bass3.css" />
-    <style type="text/css">
-    body {
-        overflow-y: auto;
-        overflow-x: hidden;
-        scroll-snap-type: mandatory;
-        scroll-snap-points-y: repeat(120px);
-    }
     
-    .ghx-columns {}
+    <link rel="stylesheet" type="text/css" href="bass3.css" />
+  <link rel="stylesheet" type="text/css" href="bass.css" />
+  <style type="text/css">
+    
+
+    .ghx-column {
+      overflow-x: hidden;
+      overflow-y: auto;
+      max-height: 200px;
+      width:250px;
+      background: #f5f5f5;
+    }
     
     .ghx-content-main {
         width: 780px;
@@ -28,7 +30,18 @@
     }
 
     .js-detailview, .ghx-issue-content {
-      cusor:auto;
+      cursor:auto;
+    }
+
+    .ghx-issue {
+      cursor:auto;
+    }
+
+    .ghx-end:hover, .ghx-corner:hover {
+      background-color: #ffffff;
+    }
+    .ghx-issue:hover {
+      background-color: #ffffff;
     }
 
     .hide {
@@ -46,6 +59,18 @@
 .ghx-column-headers .ghx-column {
   background: none;
 }
+
+.ghx-issue.ghx-selected {
+  border: 5px solid yellow;
+  height:auto;
+}
+.ghx-issue.ghx-selected .ghx-issue-fields .ghx-summary .ghx-inner {
+max-height: none;
+  height: auto;
+}
+
+
+
 
 .preference-panel {
   width: 100%;
@@ -101,10 +126,40 @@
   background: #efefef;
   border-right: 1px solid #cfcfcf;
 }
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: 
+    overflow-y: auto;
+    overflow-x: hidden;
+    scroll-snap-type: mandatory;
+    scroll-snap-points-y: repeat(120px);
+}
+
+#logo {
+    padding: 0;
+    margin: 0 0;
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.showlogo {
+  display: block;
+}
+
+.hidelogo {
+  display: none;
+}
+
 </style>
 
 </head>
-  <body>
+  <body id="jira">
+     <img id="logo" class="hidelogo" src="F2.png" />
+
+
     <div id="preference" class="preference hide"></div>
 
     <div id="ghx-content-main" class="ghx-content-main">

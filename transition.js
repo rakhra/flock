@@ -17,7 +17,7 @@ var fetchTransitions = function(issueId) {
         .then(JSON.parse)
         .then(function(response) {
           response.transitions.forEach(function (t) {
-            if (t.name == "In Progress") {
+            if (t.name == preference['target-state']) {
               inProgressTransitionPayload.transition.id = t.id;
             }
           })

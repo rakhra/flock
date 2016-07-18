@@ -5,6 +5,7 @@ var defaultPreference = {
   'open-window-shortcut': 'ctrl+j',
   'board-url': '',
   'epic': '',
+  'target-state': 'In Progress',
   'login': '',
   'password' : ''
 }
@@ -13,6 +14,7 @@ var preferenceNames = {
   'open-window-shortcut': 'Open Shortcut',
   'board-url': 'JIRA Board URL',
   'epic': 'Epic Filter',
+  'target-state': 'Target State',
   'login': 'JIRA Login',
   'password' : 'JIRA Password'
 }
